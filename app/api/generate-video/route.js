@@ -5,7 +5,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export async function POST(request) {
   try {
-    const { deviceId, topic } = await request.json()
+    const { deviceId, topic, backgroundUrl } = await request.json()
     if (!deviceId || !topic) return Response.json({ error: 'Device ID and topic are required' }, { status: 400 })
 
     await initDB()
@@ -46,7 +46,7 @@ export async function POST(request) {
     const mergeRes = await fetch(`${BASE_URL}/api/merge-video`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ script, audioUrl, topic }),
+      body: JSON.stringify({ script, audioUrl, topic, backgroundUrl }),
     })
     if (!mergeRes.ok) {
       const err = await mergeRes.json()

@@ -10,6 +10,7 @@ function LoadingContent() {
   const params = useSearchParams()
   const topic = params.get('topic')
   const deviceId = params.get('deviceId')
+  const backgroundUrl = params.get('backgroundUrl')
   const started = useRef(false)
 
   useEffect(() => {
@@ -24,7 +25,7 @@ function LoadingContent() {
       const res = await fetch('/api/generate-video', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deviceId, topic }),
+        body: JSON.stringify({ deviceId, topic, backgroundUrl }),
       })
 
       if (!res.ok) {

@@ -3,8 +3,10 @@ import { initDB } from '../utils/initDB'
 
 export async function POST(request) {
   try {
-    const { script, audioUrl, topic } = await request.json()
+    const { script, audioUrl, topic, backgroundUrl } = await request.json()
     if (!script || !audioUrl) return Response.json({ error: 'Script and audioUrl are required' }, { status: 400 })
+
+    const bgVideo = backgroundUrl || 'https://shotstack-assets.s3.amazonaws.com/footage/city-timelapse.mp4'
 
     let apiKey = process.env.SHOTSTACK_API_KEY
     if (!apiKey) {
@@ -29,7 +31,7 @@ export async function POST(request) {
               clips: [{
                 asset: {
                   type: 'video',
-                  src: 'https://shotstack-assets.s3.amazonaws.com/footage/abstract-background-1.mp4',
+                  src: bgVideo,
                 },
                 start: 0, length: 30, fit: 'cover',
               }],
