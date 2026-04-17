@@ -1,202 +1,139 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const NICHES = [
-  { id: 'motivation', emoji: '💪', label: 'Motivation' },
-  { id: 'money', emoji: '💰', label: 'Money & Side Hustles' },
-  { id: 'life', emoji: '🧠', label: 'Life Advice' },
-  { id: 'scary', emoji: '😨', label: 'Scary Stories' },
-  { id: 'relationships', emoji: '❤️', label: 'Relationships' },
-  { id: 'africa', emoji: '🌍', label: 'Africa Stories' },
-  { id: 'fitness', emoji: '🏋️', label: 'Fitness' },
-  { id: 'tech', emoji: '📱', label: 'Tech & AI' },
-]
-
-const STYLES = [
-  { id: 'city', emoji: '🌆', label: 'City Timelapse', url: 'https://shotstack-assets.s3.amazonaws.com/footage/city-timelapse.mp4' },
-  { id: 'beach', emoji: '🌊', label: 'Nature & Ocean', url: 'https://shotstack-assets.s3.amazonaws.com/footage/beach-overhead.mp4' },
-  { id: 'abstract', emoji: '🌌', label: 'Abstract & Dark', url: 'https://shotstack-assets.s3.amazonaws.com/footage/abstract-background-1.mp4' },
-  { id: 'drone', emoji: '🚁', label: 'Aerial Drone', url: 'https://shotstack-assets.s3.amazonaws.com/footage/skateboarder.mp4' },
-]
-
-const TONES = [
-  { id: 'deep', emoji: '🎙️', label: 'Deep & Powerful' },
-  { id: 'calm', emoji: '😌', label: 'Calm & Smooth' },
-  { id: 'energetic', emoji: '⚡', label: 'Fast & Energetic' },
-  { id: 'emotional', emoji: '🥺', label: 'Emotional & Moving' },
-]
-
-export default function Home() {
-  const [topic, setTopic] = useState('')
-  const [selectedNiche, setSelectedNiche] = useState(null)
-  const [selectedStyle, setSelectedStyle] = useState(STYLES[0])
-  const [selectedTone, setSelectedTone] = useState(TONES[0])
-  const [remaining, setRemaining] = useState(2)
-  const [error, setError] = useState('')
+export default function LandingPage() {
+  const [menuOpen, setMenuOpen] = useState(false)
   const router = useRouter()
 
-  const deviceId = typeof window !== 'undefined'
-    ? (localStorage.getItem('deviceId') || (() => {
-        const id = 'owner_' + Math.random().toString(36).substr(2, 9)
-        localStorage.setItem('deviceId', id)
-        return id
-      })())
-    : 'unknown'
-
-  useEffect(() => {
-    fetch('/api/usage/check', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ deviceId }),
-    })
-      .then(r => r.json())
-      .then(d => setRemaining(d.remaining ?? 2))
-      .catch(() => {})
-  }, [deviceId])
-
-  const handleGenerate = () => {
-    if (!topic.trim() && !selectedNiche) {
-      setError('Please enter a topic or select a niche')
-      return
-    }
-    if (remaining <= 0 && !deviceId.startsWith('owner_')) {
-      setError('Daily limit reached. Come back tomorrow!')
-      return
-    }
-    setError('')
-    const finalTopic = topic.trim() || selectedNiche?.label || 'Motivation'
-    const prompt = `${finalTopic} - tone: ${selectedTone.label}`
-    router.push(`/loading?topic=${encodeURIComponent(prompt)}&deviceId=${encodeURIComponent(deviceId)}&backgroundUrl=${encodeURIComponent(selectedStyle.url)}&tone=${encodeURIComponent(selectedTone.id)}`)
+  const handleGetStarted = () => {
+    router.push('/create')
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0A0F1E', color: 'white', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#ffffff', fontFamily: 'system-ui, sans-serif' }}>
 
-      {/* Header */}
-      <div style={{ textAlign: 'center', padding: '40px 24px 24px' }}>
-        <div style={{ fontSize: '56px', marginBottom: '12px' }}>🎬</div>
-        <h1 style={{ fontSize: '36px', fontWeight: '800', background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px' }}>
-          AutoReel
+      {/* Navbar */}
+      <nav style={{ padding: '16px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #F1F5F9', position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 100 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '24px' }}>🎬</span>
+          <span style={{ fontSize: '20px', fontWeight: '800', color: '#7C3AED' }}>AutoReel</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button onClick={handleGetStarted}
+            style={{ backgroundColor: 'white', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 20px', fontSize: '14px', fontWeight: '600', color: '#374151', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img src="https://www.google.com/favicon.ico" width="16" height="16" alt="G" />
+            Sign in with Google
+          </button>
+          <button onClick={handleGetStarted}
+            style={{ backgroundColor: '#7C3AED', border: 'none', borderRadius: '8px', padding: '8px 20px', fontSize: '14px', fontWeight: '700', color: 'white', cursor: 'pointer' }}>
+            Get started
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <div style={{ textAlign: 'center', padding: '80px 24px 60px', maxWidth: '700px', margin: '0 auto' }}>
+        {/* Trust badge */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
+          <div style={{ display: 'flex' }}>
+            {['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7'].map((c, i) => (
+              <div key={i} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: c, border: '2px solid white', marginLeft: i > 0 ? '-8px' : '0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
+                {['😊','🎯','🚀','💪','⭐'][i]}
+              </div>
+            ))}
+          </div>
+          <span style={{ fontSize: '14px', color: '#64748B' }}>Trusted by <strong>10k+</strong> creators</span>
+        </div>
+
+        <h1 style={{ fontSize: '52px', fontWeight: '900', color: '#0F172A', lineHeight: '1.1', marginBottom: '20px' }}>
+          Create viral faceless<br />
+          <span style={{ color: '#7C3AED' }}>videos on auto-pilot</span>
         </h1>
-        <p style={{ color: '#64748B', fontSize: '15px' }}>Generate viral faceless videos instantly</p>
-      </div>
 
-      <div style={{ maxWidth: '520px', margin: '0 auto', padding: '0 20px 100px' }}>
+        <p style={{ fontSize: '18px', color: '#64748B', marginBottom: '16px', lineHeight: '1.6' }}>
+          The only AI that generates faceless videos instantly.<br />
+          Perfect for TikTok, Instagram & YouTube.
+        </p>
 
-        {/* Topic Input */}
-        <div style={{ marginBottom: '28px' }}>
-          <label style={{ display: 'block', color: '#94A3B8', fontSize: '13px', fontWeight: '600', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            ✏️ Custom Topic (optional)
-          </label>
-          <input
-            value={topic}
-            onChange={e => setTopic(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleGenerate()}
-            placeholder="e.g., Why most people never get rich..."
-            style={{
-              width: '100%', backgroundColor: '#1E293B', borderRadius: '14px',
-              padding: '16px', fontSize: '15px', color: '#FFFFFF',
-              border: `2px solid ${topic ? '#3B82F6' : '#334155'}`,
-              outline: 'none', transition: 'border 0.2s',
-            }}
-          />
+        {/* Platform icons */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '40px' }}>
+          <span style={{ fontSize: '13px', color: '#94A3B8' }}>Perfect for</span>
+          <span style={{ fontSize: '22px' }}>▶️</span>
+          <span style={{ fontSize: '22px' }}>📸</span>
+          <span style={{ fontSize: '22px' }}>🎵</span>
         </div>
 
-        {/* Niche Selection */}
-        <div style={{ marginBottom: '28px' }}>
-          <label style={{ display: 'block', color: '#94A3B8', fontSize: '13px', fontWeight: '600', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            🎯 Select Niche
-          </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-            {NICHES.map(niche => (
-              <button key={niche.id} onClick={() => setSelectedNiche(selectedNiche?.id === niche.id ? null : niche)}
-                style={{
-                  backgroundColor: selectedNiche?.id === niche.id ? '#1D4ED8' : '#1E293B',
-                  border: `2px solid ${selectedNiche?.id === niche.id ? '#3B82F6' : '#334155'}`,
-                  borderRadius: '12px', padding: '12px 16px', color: '#FFFFFF', cursor: 'pointer',
-                  fontSize: '14px', fontWeight: selectedNiche?.id === niche.id ? '700' : '400',
-                  display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s', textAlign: 'left',
-                }}>
-                <span style={{ fontSize: '20px' }}>{niche.emoji}</span>
-                <span>{niche.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Video Style */}
-        <div style={{ marginBottom: '28px' }}>
-          <label style={{ display: 'block', color: '#94A3B8', fontSize: '13px', fontWeight: '600', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            🎨 Background Style
-          </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-            {STYLES.map(style => (
-              <button key={style.id} onClick={() => setSelectedStyle(style)}
-                style={{
-                  backgroundColor: selectedStyle.id === style.id ? '#1D4ED8' : '#1E293B',
-                  border: `2px solid ${selectedStyle.id === style.id ? '#3B82F6' : '#334155'}`,
-                  borderRadius: '12px', padding: '12px 16px', color: '#FFFFFF', cursor: 'pointer',
-                  fontSize: '14px', fontWeight: selectedStyle.id === style.id ? '700' : '400',
-                  display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s', textAlign: 'left',
-                }}>
-                <span style={{ fontSize: '20px' }}>{style.emoji}</span>
-                <span>{style.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Voice Tone */}
-        <div style={{ marginBottom: '28px' }}>
-          <label style={{ display: 'block', color: '#94A3B8', fontSize: '13px', fontWeight: '600', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            🎙️ Voice Tone
-          </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-            {TONES.map(tone => (
-              <button key={tone.id} onClick={() => setSelectedTone(tone)}
-                style={{
-                  backgroundColor: selectedTone.id === tone.id ? '#5B21B6' : '#1E293B',
-                  border: `2px solid ${selectedTone.id === tone.id ? '#8B5CF6' : '#334155'}`,
-                  borderRadius: '12px', padding: '12px 16px', color: '#FFFFFF', cursor: 'pointer',
-                  fontSize: '14px', fontWeight: selectedTone.id === tone.id ? '700' : '400',
-                  display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s', textAlign: 'left',
-                }}>
-                <span style={{ fontSize: '20px' }}>{tone.emoji}</span>
-                <span>{tone.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {error && (
-          <p style={{ color: '#EF4444', fontSize: '14px', marginBottom: '16px', textAlign: 'center' }}>{error}</p>
-        )}
-
-        {/* Generate Button */}
-        <button onClick={handleGenerate} disabled={!topic.trim() && !selectedNiche}
-          style={{
-            width: '100%',
-            background: (topic.trim() || selectedNiche) ? 'linear-gradient(135deg, #3B82F6, #8B5CF6)' : '#1E293B',
-            color: '#FFFFFF', border: 'none', borderRadius: '16px', padding: '20px',
-            fontSize: '18px', fontWeight: '800', cursor: (topic.trim() || selectedNiche) ? 'pointer' : 'not-allowed',
-            marginBottom: '16px', boxShadow: (topic.trim() || selectedNiche) ? '0 8px 32px rgba(59,130,246,0.3)' : 'none',
-            transition: 'all 0.2s',
-          }}>
-          🚀 Generate Video
+        <button onClick={handleGetStarted}
+          style={{ backgroundColor: '#7C3AED', border: 'none', borderRadius: '14px', padding: '18px 48px', fontSize: '18px', fontWeight: '800', color: 'white', cursor: 'pointer', boxShadow: '0 8px 32px rgba(124,58,237,0.4)', display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+          ⚡ Create your first video
         </button>
+        <p style={{ fontSize: '13px', color: '#94A3B8' }}>Get your video in less than 2 minutes</p>
+      </div>
 
-        {/* Usage */}
-        <div style={{ backgroundColor: '#1E293B', borderRadius: '12px', padding: '14px', textAlign: 'center' }}>
-          <p style={{ color: deviceId.startsWith('owner_') ? '#10B981' : (remaining > 0 ? '#10B981' : '#EF4444'), fontSize: '14px', fontWeight: '600' }}>
-            {deviceId.startsWith('owner_') ? '👑 Owner — Unlimited videos' : remaining > 0 ? `${remaining} free video${remaining === 1 ? '' : 's'} remaining today` : 'Daily limit reached — Come back tomorrow!'}
-          </p>
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <a href="/settings" style={{ color: '#475569', fontSize: '13px', textDecoration: 'none' }}>⚙️ Settings</a>
+      {/* Features row */}
+      <div style={{ backgroundColor: '#F8FAFC', padding: '60px 24px' }}>
+        <p style={{ textAlign: 'center', fontSize: '14px', color: '#94A3B8', marginBottom: '40px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600' }}>Creates videos for any niche</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', maxWidth: '900px', margin: '0 auto' }}>
+          {[
+            { emoji: '💪', label: 'Motivation' },
+            { emoji: '💰', label: 'Money & Finance' },
+            { emoji: '😨', label: 'Scary Stories' },
+            { emoji: '🧠', label: 'Life Advice' },
+            { emoji: '🌍', label: 'Africa Stories' },
+            { emoji: '🏋️', label: 'Fitness' },
+            { emoji: '📱', label: 'Tech & AI' },
+            { emoji: '🏆', label: 'Success' },
+          ].map((n, i) => (
+            <div key={i} style={{ backgroundColor: 'white', borderRadius: '12px', padding: '20px', textAlign: 'center', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <div style={{ fontSize: '28px', marginBottom: '8px' }}>{n.emoji}</div>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: '#374151' }}>{n.label}</div>
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* How it works */}
+      <div style={{ padding: '80px 24px', maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#0F172A', marginBottom: '12px' }}>How it works</h2>
+        <p style={{ color: '#64748B', marginBottom: '48px' }}>Create a professional video in 3 simple steps</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+          {[
+            { step: '1', emoji: '🎯', title: 'Choose your niche', desc: 'Pick from 10+ niches or type your own topic' },
+            { step: '2', emoji: '⚙️', title: 'Customize', desc: 'Select background, music, and caption style' },
+            { step: '3', emoji: '🎬', title: 'Download & Post', desc: 'Get your MP4 ready to post anywhere' },
+          ].map((item, i) => (
+            <div key={i} style={{ textAlign: 'center' }}>
+              <div style={{ width: '56px', height: '56px', backgroundColor: '#7C3AED', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', margin: '0 auto 16px', boxShadow: '0 4px 16px rgba(124,58,237,0.3)' }}>
+                {item.emoji}
+              </div>
+              <div style={{ fontSize: '12px', color: '#7C3AED', fontWeight: '700', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '1px' }}>Step {item.step}</div>
+              <div style={{ fontSize: '17px', fontWeight: '700', color: '#0F172A', marginBottom: '8px' }}>{item.title}</div>
+              <div style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.5' }}>{item.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div style={{ backgroundColor: '#7C3AED', padding: '80px 24px', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '36px', fontWeight: '900', color: 'white', marginBottom: '16px' }}>Start creating for free</h2>
+        <p style={{ color: '#DDD6FE', fontSize: '16px', marginBottom: '32px' }}>2 free videos every day. No credit card needed.</p>
+        <button onClick={handleGetStarted}
+          style={{ backgroundColor: 'white', border: 'none', borderRadius: '12px', padding: '16px 48px', fontSize: '17px', fontWeight: '800', color: '#7C3AED', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+          ⚡ Get Started Free
+        </button>
+      </div>
+
+      {/* Footer */}
+      <div style={{ backgroundColor: '#0F172A', padding: '32px 24px', textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '12px' }}>
+          <span style={{ fontSize: '20px' }}>🎬</span>
+          <span style={{ fontSize: '16px', fontWeight: '800', color: 'white' }}>AutoReel</span>
+        </div>
+        <p style={{ color: '#475569', fontSize: '13px' }}>© 2025 AutoReel. Generate viral faceless videos instantly.</p>
+      </div>
+
     </div>
   )
 }
